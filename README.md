@@ -1,5 +1,13 @@
 # Crop Classification with Graph Convolutional Networks (GCN)
 
+[![CI](https://github.com/Osman-Geomatics93/GCN-Crop-Classification/actions/workflows/ci.yml/badge.svg)](https://github.com/Osman-Geomatics93/GCN-Crop-Classification/actions/workflows/ci.yml)
+[![Python 3.9+](https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/)
+[![PyG](https://img.shields.io/badge/PyTorch_Geometric-2.5%2B-3C2179?logo=pyg&logoColor=white)](https://pyg.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Sentinel-2](https://img.shields.io/badge/Satellite-Sentinel--2-1B4F72)](https://sentinel.esa.int/web/sentinel/missions/sentinel-2)
+[![Stars](https://img.shields.io/github/stars/Osman-Geomatics93/GCN-Crop-Classification?style=social)](https://github.com/Osman-Geomatics93/GCN-Crop-Classification)
+
 Pixel-level crop classification from **Sentinel-2** satellite imagery using a **Graph Convolutional Network** built with PyTorch Geometric. The model classifies agricultural land into 5 crop/land-cover classes at 10 m spatial resolution.
 
 ---
@@ -8,6 +16,7 @@ Pixel-level crop classification from **Sentinel-2** satellite imagery using a **
 
 - [Overview](#overview)
 - [Method](#method)
+  - [Model Architecture](#model-architecture)
 - [Project Structure](#project-structure)
 - [Results](#results)
   - [Exploratory Data Analysis](#1-exploratory-data-analysis)
@@ -62,6 +71,26 @@ Classified Crop Map (GeoTIFF + PNG)
 2. **Graph construction** -- K-nearest neighbor graph (k=8) built in feature space to capture spectral similarity
 3. **GCN training** -- 3-layer GCN with batch normalization, dropout (0.5), and inverse-frequency class weighting
 4. **Raster inference** -- Tiled KNN-graph prediction over the full 2262x1424 Sentinel-2 composite
+
+### Model Architecture
+
+The GCN consists of 3 graph convolutional layers with batch normalization and dropout. The KNN graph (k=8) provides the edge connectivity, enabling each pixel to aggregate spectral information from its 8 most similar neighbors in feature space.
+
+<p align="center">
+  <img src="figures/gcn_architecture.png" alt="GCN Model Architecture" width="900">
+</p>
+
+| Component | Details |
+|:----------|:--------|
+| **Input** | 23 features (10 spectral bands + 13 vegetation indices) |
+| **Layer 1** | GCNConv(23, 128) + BatchNorm + ReLU + Dropout(0.5) |
+| **Layer 2** | GCNConv(128, 128) + BatchNorm + ReLU + Dropout(0.5) |
+| **Layer 3** | GCNConv(128, 5) — output logits |
+| **Graph** | KNN (k=8), symmetric, undirected |
+| **Parameters** | 20,741 |
+| **Optimizer** | Adam (lr=0.01, weight_decay=5e-4) |
+| **Loss** | CrossEntropy with inverse-frequency class weights |
+| **Early stopping** | Patience = 30 epochs |
 
 ## Project Structure
 
