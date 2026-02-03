@@ -17,6 +17,10 @@ Pixel-level crop classification from **Sentinel-2** satellite imagery using a **
 - [Installation](#installation)
 - [Usage](#usage)
 - [Data](#data)
+  - [Study Area](#study-area)
+  - [Sentinel-2 Raster Composite](#sentinel-2-raster-composite)
+  - [Training Dataset](#training-dataset)
+  - [Preprocessing Pipeline](#preprocessing-pipeline)
 - [License](#license)
 
 ---
@@ -280,14 +284,169 @@ Applies the trained GCN to the Sentinel-2 composite and produces:
 
 ## Data
 
-Training data is derived from Sentinel-2 imagery (2020 Q1) over an agricultural region (EPSG:32636, 10 m resolution). The 24-band composite includes:
+### Study Area
 
-| Category | Features |
-|:---------|:---------|
-| **Spectral bands** | B2, B3, B4, B5, B6, B7, B8, B8A, B11, B12 |
-| **Vegetation indices** | NDVI, EVI, SAVI, GNDVI, NDRE, NDRE2, NDWI, MNDWI, BSI, NDTI, CIgreen, CIrededge, MSAVI, GCVI |
+The study area is located in the **Gezira agricultural region, Sudan** -- one of the largest irrigated schemes in Africa, situated between the Blue Nile and White Nile rivers.
 
-> GCVI is dropped during training (duplicate of CIgreen), leaving **23 features**.
+| Property | Value |
+|:---------|:------|
+| **Location** | Gezira State, Sudan |
+| **Center coordinates** | 14.053° N, 32.623° E |
+| **Coordinate system** | WGS 84 / UTM Zone 36N (EPSG:32636) |
+| **Spatial extent** | 22.62 km x 14.24 km (322 km²) |
+| **Temporal period** | Q1 2020 (January -- March) |
+| **Satellite** | Sentinel-2 (ESA Copernicus) |
+
+---
+
+### Sentinel-2 Raster Composite
+
+The input raster is a multi-temporal composite derived from Sentinel-2 Level-2A (surface reflectance) imagery.
+
+`S2_composite_24bands_2020_Q1.tif`
+
+| Property | Value |
+|:---------|:------|
+| **Dimensions** | 2,262 x 1,424 pixels |
+| **Total pixels** | 3,221,088 |
+| **Valid pixels** | 1,043,855 (32.4%) |
+| **Spatial resolution** | 10 m |
+| **Bands** | 24 (float32) |
+| **Compression** | LZW |
+| **File size** | ~107 MB |
+
+#### Spectral Bands (10)
+
+Sentinel-2 surface reflectance bands covering visible, red-edge, near-infrared, and short-wave infrared wavelengths:
+
+| Band | Name | Wavelength (nm) | Description |
+|:-----|:-----|:---------------:|:------------|
+| 1 | **B2** | 490 | Blue |
+| 2 | **B3** | 560 | Green |
+| 3 | **B4** | 665 | Red |
+| 4 | **B5** | 705 | Red Edge 1 |
+| 5 | **B6** | 740 | Red Edge 2 |
+| 6 | **B7** | 783 | Red Edge 3 |
+| 7 | **B8** | 842 | Near Infrared (NIR) |
+| 8 | **B8A** | 865 | Narrow NIR |
+| 9 | **B11** | 1610 | Short-Wave Infrared 1 (SWIR-1) |
+| 10 | **B12** | 2190 | Short-Wave Infrared 2 (SWIR-2) |
+
+#### Spectral Indices (14)
+
+Derived vegetation, water, and soil indices computed from the spectral bands:
+
+| Index | Formula | Purpose |
+|:------|:--------|:--------|
+| **NDVI** | (NIR - Red) / (NIR + Red) | Vegetation greenness |
+| **EVI** | 2.5 * (NIR - Red) / (NIR + 6*Red - 7.5*Blue + 1) | Enhanced vegetation (corrects atmospheric effects) |
+| **SAVI** | 1.5 * (NIR - Red) / (NIR + Red + 0.5) | Soil-adjusted vegetation |
+| **GNDVI** | (NIR - Green) / (NIR + Green) | Green-band vegetation |
+| **NDRE** | (NIR - RedEdge1) / (NIR + RedEdge1) | Red-edge vegetation |
+| **NDRE2** | (RedEdge3 - RedEdge1) / (RedEdge3 + RedEdge1) | Narrow red-edge vegetation |
+| **NDWI** | (Green - NIR) / (Green + NIR) | Water content in vegetation |
+| **MNDWI** | (Green - SWIR1) / (Green + SWIR1) | Modified water index (surface water) |
+| **BSI** | ((SWIR1 + Red) - (NIR + Blue)) / ((SWIR1 + Red) + (NIR + Blue)) | Bare soil |
+| **NDTI** | (SWIR1 - SWIR2) / (SWIR1 + SWIR2) | Non-photosynthetic vegetation / tillage |
+| **CIgreen** | (NIR / Green) - 1 | Chlorophyll index (green) |
+| **CIrededge** | (NIR / RedEdge1) - 1 | Chlorophyll index (red edge) |
+| **MSAVI** | (2*NIR + 1 - sqrt((2*NIR+1)² - 8*(NIR-Red))) / 2 | Modified soil-adjusted vegetation |
+| **GCVI** | (NIR / Green) - 1 | Green chlorophyll vegetation index |
+
+> **Note:** GCVI is identical to CIgreen and is dropped during training, leaving **23 features**.
+
+---
+
+### Training Dataset
+
+Labeled ground-truth samples extracted from the raster at known crop field locations.
+
+`crop_training_data_5classes_2020.csv`
+
+| Property | Value |
+|:---------|:------|
+| **Total samples** | 24,556 |
+| **After deduplication** | 24,556 (no duplicates) |
+| **Features** | 23 (after dropping GCVI) |
+| **Missing values** | 0 |
+| **File size** | ~8.6 MB |
+
+#### Class Distribution
+
+| Class ID | Class Name | Samples | Percentage | Category |
+|:--------:|:-----------|--------:|:----------:|:---------|
+| 0 | **Cotton** | 337 | 1.4% | Minority |
+| 1 | **Wheat** | 7,901 | 32.2% | Majority |
+| 2 | **Fallow** | 11,150 | 45.4% | Majority |
+| 3 | **Grass** | 5,024 | 20.5% | Moderate |
+| 4 | **Water** | 144 | 0.6% | Minority |
+
+#### Data Split
+
+The dataset is split using stratified random sampling (seed=42) to preserve class proportions:
+
+| Split | Percentage | Samples | Purpose |
+|:------|:----------:|--------:|:--------|
+| **Train** | 70% | 17,189 | Model training + scaler fitting |
+| **Validation** | 15% | 3,684 | Early stopping & hyperparameter selection |
+| **Test** | 15% | 3,683 | Final unbiased evaluation |
+
+#### Feature Value Ranges
+
+| Feature | Min | Max | Mean | Std |
+|:--------|----:|----:|-----:|----:|
+| B2 | 0.0124 | 0.1406 | 0.0567 | 0.0321 |
+| B3 | 0.0336 | 0.1806 | 0.0912 | 0.0378 |
+| B4 | 0.0179 | 0.2885 | 0.1053 | 0.0682 |
+| B5 | 0.0379 | 0.3036 | 0.1490 | 0.0649 |
+| B6 | 0.0152 | 0.3286 | 0.1973 | 0.0792 |
+| B7 | 0.0187 | 0.3856 | 0.2172 | 0.0906 |
+| B8 | 0.0211 | 0.4196 | 0.2320 | 0.0989 |
+| B8A | 0.0173 | 0.3943 | 0.2366 | 0.0945 |
+| B11 | 0.0276 | 0.3987 | 0.2073 | 0.0641 |
+| B12 | 0.0223 | 0.3001 | 0.1526 | 0.0660 |
+| NDVI | -0.3794 | 0.9099 | 0.4226 | 0.2892 |
+| EVI | -0.1346 | 0.7345 | 0.1951 | 0.1741 |
+| SAVI | -0.0748 | 0.6408 | 0.2633 | 0.1842 |
+| GNDVI | -0.1824 | 0.8117 | 0.4384 | 0.2215 |
+| NDRE | -0.1618 | 0.4439 | 0.1583 | 0.1397 |
+| NDRE2 | -0.1485 | 0.2174 | 0.0792 | 0.0733 |
+| NDWI | -0.4701 | 0.5739 | 0.1183 | 0.2075 |
+| MNDWI | -0.6554 | 0.3752 | -0.3611 | 0.1686 |
+| BSI | -0.4143 | 0.2164 | -0.0017 | 0.1064 |
+| NDTI | 0.0034 | 0.2614 | 0.1193 | 0.0414 |
+| CIgreen | -0.2674 | 11.6385 | 2.0076 | 2.0345 |
+| CIrededge | -0.2386 | 3.8363 | 0.5632 | 0.5991 |
+| MSAVI | -0.1033 | 0.5920 | 0.1676 | 0.1568 |
+
+---
+
+### Preprocessing Pipeline
+
+```
+Raw CSV (24,556 samples, 28 columns)
+        |
+        v
+Drop metadata columns (system:index, .geo)
+        |
+        v
+Drop GCVI (duplicate of CIgreen)
+        |
+        v
+Remove duplicates (0 found)
+        |
+        v
+Stratified train/val/test split (70/15/15)
+        |
+        v
+StandardScaler (fit on train set only)
+        |
+        v
+KNN Graph Construction (k=8 neighbors)
+        |
+        v
+PyTorch Geometric Data Object
+```
 
 ## License
 
