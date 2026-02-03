@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Crop Classification with Graph Convolutional Networks"
+type: software
+authors:
+  - given-names: Osman
+date-released: "2025-01-01"
+url: https://github.com/Osman-Geomatics93/GCN-Crop-Classification
+repository-code: https://github.com/Osman-Geomatics93/GCN-Crop-Classification
+license: MIT
+keywords:
+  - crop-classification
+  - graph-neural-networks
+  - sentinel-2
+  - remote-sensing
+  - deep-learning
+  - pytorch-geometric

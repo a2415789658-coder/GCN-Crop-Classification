@@ -10,6 +10,10 @@
 
 Pixel-level crop classification from **Sentinel-2** satellite imagery using a **Graph Convolutional Network** built with PyTorch Geometric. The model classifies agricultural land into 5 crop/land-cover classes at 10 m spatial resolution.
 
+<p align="center">
+  <img src="figures/comparison.gif" alt="Satellite vs Classification" width="700">
+</p>
+
 ---
 
 ## Table of Contents
@@ -23,6 +27,7 @@ Pixel-level crop classification from **Sentinel-2** satellite imagery using a **
   - [Model Training](#2-model-training)
   - [Model Evaluation](#3-model-evaluation)
   - [Spatial Classification Map](#4-spatial-classification-map)
+- [Interactive Demo](#interactive-demo)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Data](#data)
@@ -96,28 +101,31 @@ The GCN consists of 3 graph convolutional layers with batch normalization and dr
 
 ```
 .
+|-- app.py                       # Streamlit interactive dashboard
 |-- explore_data.py              # EDA and feature visualization
 |-- gcn_crop_classification.py   # GCN model training and evaluation
 |-- apply_gcn_to_raster.py       # Apply trained model to full raster
 |-- requirements.txt             # Python dependencies
+|-- CITATION.cff                 # Citation metadata
 |-- LICENSE                      # MIT License
+|-- .github/
+|   |-- workflows/ci.yml         # GitHub Actions CI
+|   |-- ISSUE_TEMPLATE/          # Bug report & feature request forms
+|   +-- PULL_REQUEST_TEMPLATE.md # PR template
 |-- data/                        # Input data (not tracked in git)
 |   |-- crop_training_data_5classes_2020.csv
 |   |-- S2_composite_24bands_2020_Q1.tif
 |   +-- crop_classification_map.tif  (output)
 +-- figures/                     # Generated plots and maps
-    |-- 01_class_distribution.png
-    |-- 02_correlation_heatmap.png
-    |-- 03_bands_boxplot.png
-    |-- 04_indices_boxplot.png
-    |-- 05_key_indices_hist.png
-    |-- 06_class_feature_profile.png
+    |-- comparison.gif           # Animated satellite vs classification
+    |-- gcn_architecture.png     # Model architecture diagram
+    |-- crop_classification_map.png
     |-- gcn_training_curves.png
     |-- gcn_confusion_matrix.png
     |-- gcn_confusion_matrix_norm.png
     |-- gcn_per_class_accuracy.png
     |-- gcn_tsne_embeddings.png
-    +-- crop_classification_map.png
+    +-- 01-06_*.png              # EDA visualizations
 ```
 
 ---
@@ -255,6 +263,26 @@ The final classified crop map produced by applying the trained GCN to the full S
 <p align="center">
   <img src="figures/crop_classification_map.png" alt="GCN Crop Classification Map" width="900">
 </p>
+
+---
+
+## Interactive Demo
+
+An interactive Streamlit dashboard is included for exploring results, model performance, and data analysis -- no coding required.
+
+```bash
+pip install streamlit plotly pillow
+streamlit run app.py
+```
+
+The dashboard features 4 tabs:
+
+| Tab | Content |
+|:----|:--------|
+| **Classification Map** | Predicted crop map + pixel-count bar chart and donut chart |
+| **Model Performance** | Training curves, confusion matrix, per-class accuracy, t-SNE embeddings |
+| **Data Explorer** | Class distribution, correlation heatmap, index histograms, feature profiles |
+| **Architecture** | GCN architecture diagram with model details |
 
 ---
 
