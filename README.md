@@ -102,11 +102,14 @@ The GCN consists of 3 graph convolutional layers with batch normalization and dr
 ```
 .
 |-- app.py                       # Streamlit interactive dashboard
+|-- tutorial.ipynb               # Step-by-step Jupyter notebook tutorial
 |-- explore_data.py              # EDA and feature visualization
 |-- gcn_crop_classification.py   # GCN model training and evaluation
 |-- apply_gcn_to_raster.py       # Apply trained model to full raster
 |-- requirements.txt             # Python dependencies
 |-- CITATION.cff                 # Citation metadata
+|-- CONTRIBUTING.md              # Contribution guidelines
+|-- CODE_OF_CONDUCT.md           # Community code of conduct
 |-- LICENSE                      # MIT License
 |-- .github/
 |   |-- workflows/ci.yml         # GitHub Actions CI
